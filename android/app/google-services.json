@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "341470184842",
+    "project_id": "fieldtrip-86fab",
+    "storage_bucket": "fieldtrip-86fab.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:341470184842:android:7835c89b0dfeaadafd7473",
+        "android_client_info": {
+          "package_name": "com.example.mfieldtrip"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "341470184842-5fs7k4b4685ucup20cha7acbgpr61iu9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mfieldtrip",
+            "certificate_hash": "b40f3d9c3c0393970ae5d82611accd9c6697690c"
+          }
+        },
+        {
+          "client_id": "341470184842-2g6m459pm6buf7gco6909q18h0s6dusk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJI14075-2GkmkHeKGATAHje5ajoPlGgA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "341470184842-2g6m459pm6buf7gco6909q18h0s6dusk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
