@@ -1,7 +1,14 @@
+import 'package:flutter_map/flutter_map.dart';
+import 'package:geocoder2/geocoder2.dart';
+import 'package:latlong/latlong.dart';
+import 'dart:async';
+// import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mfieldtrip/Start.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+// import 'package:geocoder2/geocoder2.dart';
+import 'CreateFieldTrip.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -10,11 +17,27 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  late User user;
+  User? user;
   bool isloggedin = false;
-
+  // final Completer<GoogleMapController> _controller=Completer();
+  // static const CameraPosition _kGooglePlex = CameraPosition(target: LatLng(33.6864,73.0479),
+  // zoom:14,
+  // );
+  //
+  // final List<Markers> _markers =const <Markers>[
+  //   Marker(
+  //     markerId: MarkerId('1'),
+  //     position: LatLng(33.6864, 73.0479),
+  //     infoWindow: InfoWindow(
+  //       title: 'The title of the marker'
+  //     )
+  //   )
+  // ];
+  LatLng point=LatLng(49.5, -0.09);
+  // var location=[];
   checkAuthentification() async {
-    _auth.authStateChanges().listen((user) {
+    _auth.authStateChanges().listen((fuser) {
+      user=fuser;
       if (user == null) {
         Navigator.of(context).pushReplacementNamed("start");
       }
@@ -50,13 +73,25 @@ class _HomePageState extends State<HomePage> {
     final googleSignIn = GoogleSignIn();
     await googleSignIn.signOut();
   }
+  navigateToCreateFieldTrip() async {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => CreateFieldTrip()));
+  }
 
   @override
   void initState() {
     super.initState();
     this.checkAuthentification();
     this.getUser();
+    // super.initState();
+    // getUser().whenComplete((){
+    //   setState(() {});
+    // });
   }
+  // @override
+  // void initState() {
+  //   name = "Flutter Campus";
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -73,9 +108,67 @@ class _HomePageState extends State<HomePage> {
           ),backgroundColor: Colors.lightGreen,
         ),
       ),
-      body: const Center(
-        child: Text('My Page!'),
+      // body: GoogleMap(
+      //   initialCameraPosition: _kGooglePlex,
+      //     markers: Set<Marker>.of(_markers),
+      //   onMapCreated: (GoogleMapController controller){
+      //     _controller.complete(controller);
+      //   }
+      // ),
+      body: Stack(
+        children: [
+          FlutterMap(
+            options: MapOptions(
+            onTap: (p) async {
+              GeoData location = await Geocoder2.getDataFromCoordinates(
+                  latitude: p.latitude, longitude: p.longitude, googleMapApiKey: ''));
+            print("${location.country}");
+              setState((){
+                point=p;
+              });
+            },
+            center: LatLng(49.5, -0.09),
+            zoom: 10.0
+          ),
+          layers: [
+            TileLayerOptions(
+              urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+              subdomains: ['a','b','c'],
+            ),
+            MarkerLayerOptions(markers: [
+              Marker(
+                  width:100.0,
+                  height:100.0,
+                  point: point, builder: (ctx)=> Icon(
+                Icons.location_on, color: Colors.red,
+                size:40.0,
+              )),
+            ],
+            ),
 
+          ],
+          ),
+          Padding(padding: const EdgeInsets.symmetric(vertical: 34.0, horizontal: 16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Card(
+                  child: TextField(
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.location_on_outlined),
+                      hintText: "Search for location",
+                      contentPadding: EdgeInsets.all(16.0),
+                    ),
+                  ),
+                ),
+                Card(child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text("${location.country}, ${location.address}, ${location.first.state}",
+                  style: TextStyle(fontWeight: FontWeight.bold),),
+                ),)
+              ],
+            ),)
+        ],
       ),
       drawer: Drawer(
         // Add a ListView to the drawer. This ensures the user can scroll
@@ -103,7 +196,7 @@ class _HomePageState extends State<HomePage> {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    "${user.displayName}",
+                    "${user?.displayName}",
                       // "${user.email}",
                     style:
                     TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
@@ -115,7 +208,7 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
                   // "${user.displayName}"
-                      "${user.email}",
+                      "${user?.email}",
                   style:
                   TextStyle(fontSize: 10.0),
                 ),
@@ -128,7 +221,7 @@ class _HomePageState extends State<HomePage> {
 //               child: Text('Drawer Header'),
 //             ),
             ListTile(
-              title: const Text('Item 1'),
+              title: const Text('Create FieldTrip'),
               onTap: () {
                 // Update the state of the app
                 // ...
@@ -138,12 +231,13 @@ class _HomePageState extends State<HomePage> {
             ),
             ListTile(
               title: const Text('Item 2'),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.pop(context);
-              },
+              onTap: navigateToCreateFieldTrip,
+              // onTap: () {
+              //   // Update the state of the app
+              //   // ...
+              //   // Then close the drawer
+              //   // Navigator.pop(CreateFieldTrip());
+              // },
             ),
         Padding(
           padding: const EdgeInsets.all(10.0),

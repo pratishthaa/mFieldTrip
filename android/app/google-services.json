@@ -37,6 +37,13 @@
             {
               "client_id": "341470184842-2g6m459pm6buf7gco6909q18h0s6dusk.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "341470184842-baet7v22h78teedgsa8ukd674et82bin.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.mfieldtrip"
+              }
             }
           ]
         }

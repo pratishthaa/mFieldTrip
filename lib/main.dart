@@ -1,3 +1,4 @@
+import 'package:mfieldtrip/CreateFieldTrip.dart';
 import 'package:mfieldtrip/Login.dart';
 import 'package:mfieldtrip/Signup.dart';
 import 'package:mfieldtrip/Start.dart';
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
         "Login" : (BuildContext context)=>Login(),
         "SignUp":(BuildContext context)=>SignUp(),
         "start":(BuildContext context)=>Start(),
+        "createFieldTrip":(BuildContext context)=>CreateFieldTrip(),
       },
 
     );

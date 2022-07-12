@@ -42,8 +42,22 @@ dependencies:
   form_field_validator:
   firebase_core:
   flutter_signin_button:
-  google_maps_flutter:
-  google_maps_flutter_web:
+  flutter_inappwebview:
+  flutter_map:
+  geocoder2:
+  tuple:
+  latlong:
+  positioned_tap_detector_2:
+  transparent_image:
+  async:
+  flutter_image:
+  vector_math:
+  proj4dart:
+  meta:
+  collection:
+#  geolocator:
+#  geocoding:
+#  google_maps_flutter:
 
 dev_dependencies:
   flutter_test:
