@@ -55,6 +55,7 @@ dependencies:
   proj4dart:
   meta:
   collection:
+  dropdown_button2:
 #  geolocator:
 #  geocoding:
 #  google_maps_flutter:

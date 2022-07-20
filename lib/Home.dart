@@ -1,6 +1,7 @@
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geocoder2/geocoder2.dart';
-import 'package:latlong/latlong.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:positioned_tap_detector_2/positioned_tap_detector_2.dart';
 import 'dart:async';
 // import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mfieldtrip/Start.dart';
@@ -34,7 +35,7 @@ class _HomePageState extends State<HomePage> {
   //   )
   // ];
   LatLng point=LatLng(49.5, -0.09);
-  // var location=[];
+  GeoData? location;
   checkAuthentification() async {
     _auth.authStateChanges().listen((fuser) {
       user=fuser;
@@ -119,12 +120,12 @@ class _HomePageState extends State<HomePage> {
         children: [
           FlutterMap(
             options: MapOptions(
-            onTap: (p) async {
-              GeoData location = await Geocoder2.getDataFromCoordinates(
-                  latitude: p.latitude, longitude: p.longitude, googleMapApiKey: ''));
-            print("${location.country}");
+            onTap: (p, point) async {
+              location = await Geocoder2.getDataFromCoordinates(
+                  latitude: point.latitude, longitude: point.longitude, googleMapApiKey: 'AIzaSyC2S0anL4zRhImALsWNMuGa-5nhnAQWqwA');
+            print("${location?.country}");
               setState((){
-                point=p;
+                point=p as LatLng;
               });
             },
             center: LatLng(49.5, -0.09),
@@ -163,7 +164,8 @@ class _HomePageState extends State<HomePage> {
                 ),
                 Card(child: Padding(
                   padding: EdgeInsets.all(16.0),
-                  child: Text("${location.country}, ${location.address}, ${location.first.state}",
+    // child: Text("new location",
+    child: Text("${location?.country}, ${location?.city}, ${location?.state}",
                   style: TextStyle(fontWeight: FontWeight.bold),),
                 ),)
               ],
@@ -222,22 +224,12 @@ class _HomePageState extends State<HomePage> {
 //             ),
             ListTile(
               title: const Text('Create FieldTrip'),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.pop(context);
-              },
+              onTap: navigateToCreateFieldTrip,
             ),
             ListTile(
               title: const Text('Item 2'),
-              onTap: navigateToCreateFieldTrip,
-              // onTap: () {
-              //   // Update the state of the app
-              //   // ...
-              //   // Then close the drawer
-              //   // Navigator.pop(CreateFieldTrip());
-              // },
+              onTap: () {
+              },
             ),
         Padding(
           padding: const EdgeInsets.all(10.0),
