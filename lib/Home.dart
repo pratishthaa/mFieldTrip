@@ -227,6 +227,11 @@ class _HomePageState extends State<HomePage> {
               onTap: navigateToCreateFieldTrip,
             ),
             ListTile(
+              title: const Text('FieldTrips'),
+              onTap: () {
+              },
+            ),
+            ListTile(
               title: const Text('Settings'),
               onTap: () {
               },

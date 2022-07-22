@@ -105,14 +105,14 @@ class _CreateFieldTripState extends State<CreateFieldTrip> {
     "any fees":isCharged,
     });
 }
-PlatformFile? pickedFile;
-  Future selectFile() async{
-    final result=await FilePicker.platform.pickFiles();
-    if(result==null)return;
-setState((){
-  pickedFile=result.files.first;
-});
-  }
+// PlatformFile? pickedFile;
+//   Future selectFile() async{
+//     final result=await FilePicker.platform.pickFiles();
+//     if(result==null)return;
+// setState((){
+//   pickedFile=result.files.first;
+// });
+//   }
   @override
   Widget build(BuildContext context) {
     Color getColor(Set<MaterialState> states) {
@@ -687,13 +687,13 @@ setState((){
                       ],
                     ),
                   ),
-                  if(pickedFile!=null)
-                    Expanded(child: Text(pickedFile!.name),
-                    ),
-                  Padding(
-                    padding: const EdgeInsets.all(13.0),
-                    child: TextButton(onPressed: selectFile, child: Text('Select Image')),
-                  ),
+                  // if(pickedFile!=null)
+                  //   Expanded(child: Text(pickedFile!.name),
+                  //   ),
+                  // Padding(
+                  //   padding: const EdgeInsets.all(13.0),
+                  //   child: TextButton(onPressed: selectFile, child: Text('Select Image')),
+                  // ),
                   Padding(
                     padding: const EdgeInsets.all(13.0),
                     child: ElevatedButton(
