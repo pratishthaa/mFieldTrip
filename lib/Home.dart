@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> {
   //     )
   //   )
   // ];
-  LatLng point=LatLng(49.5, -0.09);
+  LatLng point=LatLng(53, -116.5);
   GeoData? location;
   checkAuthentification() async {
     _auth.authStateChanges().listen((fuser) {
@@ -128,7 +128,7 @@ class _HomePageState extends State<HomePage> {
                 point=p as LatLng;
               });
             },
-            center: LatLng(49.5, -0.09),
+            center: LatLng(53, -116.5),
             zoom: 10.0
           ),
           layers: [
@@ -164,8 +164,8 @@ class _HomePageState extends State<HomePage> {
                 ),
                 Card(child: Padding(
                   padding: EdgeInsets.all(16.0),
-    // child: Text("new location",
-    child: Text("${location?.country}, ${location?.city}, ${location?.state}",
+    child: Text("Go to new location",
+    // child: Text("${location?.country}, ${location?.city}, ${location?.state}",
                   style: TextStyle(fontWeight: FontWeight.bold),),
                 ),)
               ],
@@ -227,7 +227,7 @@ class _HomePageState extends State<HomePage> {
               onTap: navigateToCreateFieldTrip,
             ),
             ListTile(
-              title: const Text('Item 2'),
+              title: const Text('Settings'),
               onTap: () {
               },
             ),
