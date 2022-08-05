@@ -58,6 +58,7 @@ dependencies:
   dropdown_button2:
   file_picker:
   firebase_storage:
+  firebase_database:
 #  geolocator:
 #  geocoding:
 #  google_maps_flutter:

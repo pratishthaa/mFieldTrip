@@ -1,14 +1,10 @@
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geocoder2/geocoder2.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:positioned_tap_detector_2/positioned_tap_detector_2.dart';
-import 'dart:async';
-// import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:mfieldtrip/Start.dart';
+import 'package:mfieldtrip/SoloFieldTrips.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-// import 'package:geocoder2/geocoder2.dart';
 import 'CreateFieldTrip.dart';
 
 class HomePage extends StatefulWidget {
@@ -20,20 +16,6 @@ class _HomePageState extends State<HomePage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   User? user;
   bool isloggedin = false;
-  // final Completer<GoogleMapController> _controller=Completer();
-  // static const CameraPosition _kGooglePlex = CameraPosition(target: LatLng(33.6864,73.0479),
-  // zoom:14,
-  // );
-  //
-  // final List<Markers> _markers =const <Markers>[
-  //   Marker(
-  //     markerId: MarkerId('1'),
-  //     position: LatLng(33.6864, 73.0479),
-  //     infoWindow: InfoWindow(
-  //       title: 'The title of the marker'
-  //     )
-  //   )
-  // ];
   LatLng point=LatLng(53, -116.5);
   GeoData? location;
   checkAuthentification() async {
@@ -78,21 +60,16 @@ class _HomePageState extends State<HomePage> {
     Navigator.push(context, MaterialPageRoute(builder: (context) => CreateFieldTrip()));
   }
 
+  navigateToCFieldTrip() async {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => SoloFieldTrip()));
+  }
+
   @override
   void initState() {
     super.initState();
     this.checkAuthentification();
     this.getUser();
-    // super.initState();
-    // getUser().whenComplete((){
-    //   setState(() {});
-    // });
   }
-  // @override
-  // void initState() {
-  //   name = "Flutter Campus";
-  //   super.initState();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -109,13 +86,6 @@ class _HomePageState extends State<HomePage> {
           ),backgroundColor: Colors.lightGreen,
         ),
       ),
-      // body: GoogleMap(
-      //   initialCameraPosition: _kGooglePlex,
-      //     markers: Set<Marker>.of(_markers),
-      //   onMapCreated: (GoogleMapController controller){
-      //     _controller.complete(controller);
-      //   }
-      // ),
       body: Stack(
         children: [
           FlutterMap(
@@ -228,8 +198,7 @@ class _HomePageState extends State<HomePage> {
             ),
             ListTile(
               title: const Text('FieldTrips'),
-              onTap: () {
-              },
+              onTap: navigateToCFieldTrip,
             ),
             ListTile(
               title: const Text('Settings'),
@@ -257,30 +226,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-//         body: Container(
-//           child: !isloggedin
-//               ? CircularProgressIndicator()
-//               : Column(
-//             children: <Widget>[
-//               SizedBox(height: 40.0),
-//               Container(
-//                 height: 300,
-//                 child: Image(
-//                   image: AssetImage("images/logo.png"),
-//                   fit: BoxFit.contain,
-//                 ),
-//               ),
-//               Container(
-//                 child: Text(
-//                   "Hello ${user.displayName} you are Logged in as ${user.email}",
-//                   style:
-//                   TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-//                 ),
-//               ),
-
-//               )
-//             ],
-//           ),
-//         ));
-//   }
-// }
