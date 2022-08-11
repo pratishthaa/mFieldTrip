@@ -1,9 +1,34 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:mfieldtrip/my_custom_icons_icons.dart';
 
 class SepFieldTrips extends StatelessWidget {
   final DocumentSnapshot documentSnapshot;
   const SepFieldTrips({Key? key, required this.documentSnapshot}) : super(key: key);
+  _getApplicablePeriod(String visitingPeriod) {
+    switch (visitingPeriod) {
+      case "Spring":
+        return Icon(MyCustomIcons.spring,size: 50,color: Color.fromARGB(255, 117, 116, 116),);
+      case "Summer":
+        return Icon(MyCustomIcons.summer,size: 50,color: Color.fromARGB(255, 117, 116, 116),);
+      case "Winter":
+        return Icon(MyCustomIcons.winter,size: 50,color: Color.fromARGB(255, 117, 116, 116),);
+      default:
+        return Icon(MyCustomIcons.all_year,size: 50,color: Color.fromARGB(255, 117, 116, 116),);
+    }
+  }
+    _getApplicableDuration(String duration) {
+    switch (duration) {
+      case "one day or less":
+        return Icon(MyCustomIcons.duration_one,size: 50,color: Color.fromARGB(255, 117, 116, 116),);
+      case "two to four days":
+        return Icon(MyCustomIcons.duration_two,size: 50,color: Color.fromARGB(255, 117, 116, 116),);
+      // case "Winter":
+      //   return Icon(MyCustomIcons.calendar_mouse,size: 50,);
+      default:
+        return Icon(MyCustomIcons.duration_four,size: 50,color: Color.fromARGB(255, 117, 116, 116),);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,101 +49,136 @@ class SepFieldTrips extends StatelessWidget {
       ),
 
       body:Center(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              Card(
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: SizedBox(
-                  width: 340,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Text("Description", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-                      Text(documentSnapshot['description'],),
-                  ],
-                  ),
-                ),
-              ),
-              ),
-              Card(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Card(
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: SizedBox(
-                    width: 340,
+                    width: MediaQuery.of(context).size.width * 0.90,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Author", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-                        Text(documentSnapshot['author'],),
-                      ],
+                        // Text("Description", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                        Text(documentSnapshot['description'],),
+                    ],
                     ),
                   ),
                 ),
-              ),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: SizedBox(
-                    width: 340,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Visiting Period", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-                        Text(documentSnapshot['visiting period'],),
-                      ],
+                ),
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.90,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Author", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                          Text(documentSnapshot['author'],),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: SizedBox(
-                    width: 340,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Level", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-                        Text(documentSnapshot['level'],),
-                      ],
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.90,
+                      // Image(image:NetworkImage(documentSnapshot['images'])),
+                      // child:networkImage(documentSnapshot['images']),
                     ),
                   ),
                 ),
-              ),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: SizedBox(
-                    width: 340,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Category", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-                        Text(documentSnapshot['category'],),
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.90,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Text("Visiting Period", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                          // Text(documentSnapshot['visiting period'],),
+                          _getApplicableDuration(documentSnapshot['duration']),
+                          _getApplicablePeriod(documentSnapshot['visiting period']),
+                          documentSnapshot['is access limited']==true ?  Icon(MyCustomIcons.limited_access,size: 50,color: Color.fromARGB(255, 117, 116, 116),) : Icon(MyCustomIcons.limited_access,size: 50, color:Color.fromARGB(255, 214, 214, 215)),
+                          documentSnapshot['park or protected area']==true ?  Icon(MyCustomIcons.park,size: 50,color: Color.fromARGB(255, 117, 116, 116),) : Icon(MyCustomIcons.park,size: 50,color:Color.fromARGB(255, 214, 214, 215)),
+                          documentSnapshot['any fees']==true ?  Icon(MyCustomIcons.fees,size: 50,color: Color.fromARGB(255, 117, 116, 116),) : Icon(MyCustomIcons.fees,size: 50,color:Color.fromARGB(255, 214, 214, 215)),
+
                       ],
+                      ),
+                  ),
+                ),
+                ),
+                // Card(
+                //   child: Padding(
+                //     padding: const EdgeInsets.all(10.0),
+                //     child: SizedBox(
+                //       width: MediaQuery.of(context).size.width * 0.90,
+                //       child: Column(
+                //         crossAxisAlignment: CrossAxisAlignment.start,
+                //         children: [
+                //           Text("Limited Access", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                //           documentSnapshot['is access limited']==true ?  Icon(MyCustomIcons.calendar_aqua, size: 50,) : Icon(MyCustomIcons.calendar_dune, size: 50,),
+                //       ],
+                //       ),
+                //   ),
+                // ),
+                // ),
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.90,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Level", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                          Text(documentSnapshot['level'],),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: SizedBox(
-                    width: 340,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Duration", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-                        Text(documentSnapshot['duration'],),
-                      ],
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.90,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Category", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                          Text(documentSnapshot['category'],),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.90,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Duration", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                          Text(documentSnapshot['duration'],),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+
+    ],
+            ),
           ),
         ),
       ),
