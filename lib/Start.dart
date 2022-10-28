@@ -103,8 +103,15 @@ class _StartState extends State<Start> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                RaisedButton(
-                    padding: EdgeInsets.only(left: 30, right: 30),
+                ElevatedButton(
+                  style: ButtonStyle(shape:MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    )
+                    ), 
+                    // color: Colors.lightGreen,
+                    ),
+                    
+                    // padding: EdgeInsets.only(left: 30, right: 30),
                     onPressed: navigateToLogin,
                     child: Text(
                       'LOGIN',
@@ -114,13 +121,19 @@ class _StartState extends State<Start> {
                         color: Colors.white,
                       ),
                     ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    color: Colors.lightGreen),
+                ),
+                    // shape: RoundedRectangleBorder(
+                    //   borderRadius: BorderRadius.circular(10.0),
+                    // ),
                 SizedBox(width: 20.0),
-                RaisedButton(
-                    padding: EdgeInsets.only(left: 30, right: 30),
+                ElevatedButton(
+                  style: ButtonStyle(shape:MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    )
+                    ), 
+                    // color: Colors.lightGreen,
+                    ),
+                    // padding: EdgeInsets.only(left: 30, right: 30),
                     onPressed: navigateToRegister,
                     child: Text(
                       'REGISTER',
@@ -130,10 +143,11 @@ class _StartState extends State<Start> {
                         color: Colors.white,
                       ),
                     ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    color: Colors.lightGreen),
+                )
+                    // shape: RoundedRectangleBorder(
+                    //   borderRadius: BorderRadius.circular(10.0),
+                    // ),
+                    // color: Colors.lightGreen),
               ],
             ),
             SizedBox(height: 20.0),

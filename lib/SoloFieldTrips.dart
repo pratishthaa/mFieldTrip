@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mfieldtrip/SepFieldTrips.dart';
+import 'package:gap/gap.dart';
+import '../utils/app_styles.dart';
+
+import '../utils/app_layout.dart';
 
 class SoloFieldTrip extends StatefulWidget {
   const SoloFieldTrip({Key? key}) : super(key: key);
@@ -16,7 +20,7 @@ class _SoloFieldTripState extends State<SoloFieldTrip> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.lime[100],
+      backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
         title: const Center(child: Text('Fieldtrips')),
@@ -31,31 +35,48 @@ class _SoloFieldTripState extends State<SoloFieldTrip> {
                 itemBuilder: (context, index) {
                   final DocumentSnapshot documentSnapshot =
                   streamSnapshot.data!.docs[index];
-                  return Card(
-                    margin: const EdgeInsets.all(10),
-                    child: ListTile(
-                      title: InkWell(child: Text(documentSnapshot['title']), onTap:()=>
-                        Navigator.push(context,MaterialPageRoute(builder: (context)=>SepFieldTrips(documentSnapshot: documentSnapshot))),),
-                      // title: InkWell(child: Text(documentSnapshot['title']), onTap: navigateToSepFieldTrip,),
-                      // title: Text(documentSnapshot['title']),
-                      subtitle: Text(documentSnapshot['subtitle'].toString()),
-                      trailing: SizedBox(
-                        width: 100,
-                        child: Row(
-                          // children: [
-                          //   IconButton(
-                          //       icon: const Icon(Icons.edit),
-                          //       onPressed: () =>
-                          //           _update(documentSnapshot)),
-                          //   IconButton(
-                          //       icon: const Icon(Icons.delete),
-                          //       onPressed: () =>
-                          //           _delete(documentSnapshot.id)),
-                          // ],
+                  final size=AppLayout.getSize(context);
+                  return 
+                  Container(
+      width: size.width*0.6,
+      height: 340,
+      padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 17),
+      margin: const EdgeInsets.only(right: 17,top: 20,left: 17),
+      decoration: BoxDecoration(
+        color: Styles.primaryColor,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey,
+            blurRadius: 20,
+            spreadRadius: 5,
+          )
+        ]
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            height: 240,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              color: Styles.primaryColor,
+              image: DecorationImage(fit: BoxFit.cover, image: NetworkImage(documentSnapshot['images']))
+            ),
+          )
+        ,
+        const Gap(10),
+        InkWell(child: Text(documentSnapshot['title'], 
+        style: Styles.headLineStyle2,), onTap: (){
+                        Navigator.push(context,MaterialPageRoute(builder: (context)=>
+                        SepFieldTrips(documentSnapshot: documentSnapshot)) );
+                        },
                         ),
-                      ),
-                    ),
-                  );
+                const Gap(5),
+        Text(documentSnapshot['subtitle'].toString(), style: Styles.headLineStyle3,),
+        ],
+      ),
+    );
                 },
               );
             }
@@ -65,29 +86,6 @@ class _SoloFieldTripState extends State<SoloFieldTrip> {
             );
           },
         ),
-// Add new product
-//         floatingActionButton: FloatingActionButton(
-//           // onPressed: () => _create(),
-//           child: const Icon(Icons.add),
-//
-//         ),
-//         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat
     );
   }
 }
-
-
-
-// class SoloFieldTrip extends StatelessWidget {
-//   const SoloFieldTrip({Key? key}) : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       width: MediaQuery.of(context).size.width,
-//       child: Column(
-//         children: [],
-//       ),
-//     );
-//   }
-// }

@@ -57,7 +57,7 @@ class _SignUpState extends State<SignUp> {
             title: Text('ERROR'),
             content: Text(errormessage),
             actions: <Widget>[
-              FlatButton(
+              ElevatedButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -136,18 +136,24 @@ class _SignUpState extends State<SignUp> {
                                 onSaved: (input) => _password = input!),
                           ),
                           SizedBox(height: 20),
-                          RaisedButton(
-                            padding: EdgeInsets.fromLTRB(70, 10, 70, 10),
+                          ElevatedButton(
+                            style: ButtonStyle(shape:MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    )
+                    ), 
+                    // color: Colors.lightGreen,
+                    ),
+                            // padding: EdgeInsets.fromLTRB(70, 10, 70, 10),
                             onPressed: signUp,
                             child: Text('SIGN UP',
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 20.0,
                                     fontWeight: FontWeight.bold)),
-                            color: Colors.lightGreen,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0),
-                            ),
+                            // color: Colors.lightGreen,
+                            // shape: RoundedRectangleBorder(
+                            //   borderRadius: BorderRadius.circular(20.0),
+                            // ),
                           ),
                           SizedBox(height: 5),
                           GestureDetector(

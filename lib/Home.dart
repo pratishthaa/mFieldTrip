@@ -101,23 +101,23 @@ class _HomePageState extends State<HomePage> {
             center: LatLng(53, -116.5),
             zoom: 10.0
           ),
-          layers: [
-            TileLayerOptions(
-              urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-              subdomains: ['a','b','c'],
-            ),
-            MarkerLayerOptions(markers: [
-              Marker(
-                  width:100.0,
-                  height:100.0,
-                  point: point, builder: (ctx)=> Icon(
-                Icons.location_on, color: Colors.red,
-                size:40.0,
-              )),
-            ],
-            ),
+          // layers: [
+          //   TileLayerOptions(
+          //     urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+          //     subdomains: ['a','b','c'],
+          //   ),
+          //   MarkerLayerOptions(markers: [
+          //     Marker(
+          //         width:100.0,
+          //         height:100.0,
+          //         point: point, builder: (ctx)=> Icon(
+          //       Icons.location_on, color: Colors.red,
+          //       size:40.0,
+          //     )),
+          //   ],
+          //   ),
 
-          ],
+          // ],
           ),
           Padding(padding: const EdgeInsets.symmetric(vertical: 34.0, horizontal: 16.0),
             child: Column(
@@ -207,7 +207,13 @@ class _HomePageState extends State<HomePage> {
             ),
         Padding(
           padding: const EdgeInsets.all(10.0),
-          child: RaisedButton(
+          child: ElevatedButton(
+            style: ButtonStyle(shape:MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    )
+                    ), 
+                    // color: Colors.lightGreen,
+                    ),
             // padding: EdgeInsets.fromLTRB(40, 10, 40, 10),
             onPressed: signOut,
             child: Text('Signout',
@@ -215,10 +221,10 @@ class _HomePageState extends State<HomePage> {
                     color: Colors.white,
                     fontSize: 20.0,
                     fontWeight: FontWeight.bold)),
-            color: Colors.lightGreen,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20.0),
-            ),
+            // color: Colors.lightGreen,
+            // shape: RoundedRectangleBorder(
+            //   borderRadius: BorderRadius.circular(20.0),
+            // ),
           ),
         ),],
         ),

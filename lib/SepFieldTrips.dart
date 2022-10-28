@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mfieldtrip/my_custom_icons_icons.dart';
 
 class SepFieldTrips extends StatelessWidget {
+  
   final DocumentSnapshot documentSnapshot;
   const SepFieldTrips({Key? key, required this.documentSnapshot}) : super(key: key);
   _getApplicablePeriod(String visitingPeriod) {
@@ -33,6 +34,7 @@ class SepFieldTrips extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+     
       backgroundColor: Colors.lime[100],
       appBar:
       AppBar(
@@ -55,6 +57,7 @@ class SepFieldTrips extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                
                 Card(
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
@@ -90,8 +93,7 @@ class SepFieldTrips extends StatelessWidget {
                     padding: const EdgeInsets.all(10.0),
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width * 0.90,
-                      // Image(image:NetworkImage(documentSnapshot['images'])),
-                      // child:networkImage(documentSnapshot['images']),
+                      child: Image(image: NetworkImage(documentSnapshot['images']), fit: BoxFit.fill,),
                     ),
                   ),
                 ),
@@ -103,8 +105,6 @@ class SepFieldTrips extends StatelessWidget {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Text("Visiting Period", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-                          // Text(documentSnapshot['visiting period'],),
                           _getApplicableDuration(documentSnapshot['duration']),
                           _getApplicablePeriod(documentSnapshot['visiting period']),
                           documentSnapshot['is access limited']==true ?  Icon(MyCustomIcons.limited_access,size: 50,color: Color.fromARGB(255, 117, 116, 116),) : Icon(MyCustomIcons.limited_access,size: 50, color:Color.fromARGB(255, 214, 214, 215)),
@@ -116,21 +116,6 @@ class SepFieldTrips extends StatelessWidget {
                   ),
                 ),
                 ),
-                // Card(
-                //   child: Padding(
-                //     padding: const EdgeInsets.all(10.0),
-                //     child: SizedBox(
-                //       width: MediaQuery.of(context).size.width * 0.90,
-                //       child: Column(
-                //         crossAxisAlignment: CrossAxisAlignment.start,
-                //         children: [
-                //           Text("Limited Access", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-                //           documentSnapshot['is access limited']==true ?  Icon(MyCustomIcons.calendar_aqua, size: 50,) : Icon(MyCustomIcons.calendar_dune, size: 50,),
-                //       ],
-                //       ),
-                //   ),
-                // ),
-                // ),
                 Card(
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),

@@ -62,9 +62,12 @@ dependencies:
   image_picker:
   path:
   permission_handler:
-#  geolocator:
-#  geocoding:
-#  google_maps_flutter:
+  gap:
+  image_picker_web:
+  fluttertoast:
+  firebase:
+  uuid:
+  dotted_border:
 
 dev_dependencies:
   flutter_test:

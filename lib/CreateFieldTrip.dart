@@ -1,18 +1,17 @@
-import 'dart:developer';
 import 'dart:io';
-import 'dart:typed_data';
-
+// ignore: deprecated_member_use
+import 'package:firebase/firebase.dart' as fb;
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:uuid/uuid.dart';
+import 'package:dotted_border/dotted_border.dart';
+
 
 class CreateFieldTrip extends StatefulWidget {
   const CreateFieldTrip({Key? key}) : super(key: key);
@@ -23,21 +22,16 @@ class CreateFieldTrip extends StatefulWidget {
 
 class _CreateFieldTripState extends State<CreateFieldTrip> {
 
-
-
-
   @override
 
   String? ftitle,subtitle, author,description, imageUrl;
   String? distance;
-  // late int distance;
-
   String? tripoffered;
   final List<String> tripofferedby = [
     'Athabasca University',
       'University of Calgary',
       'University of Biritish Columbia',
-      'Add Custom Organization Name',
+      'Some other',
   ];
   String? level;
   final List<String> levels = [
@@ -73,40 +67,38 @@ class _CreateFieldTripState extends State<CreateFieldTrip> {
   bool isLimited=false;
   bool isProtected=false;
   bool isCharged=false;
-  File? _image;
-  final picker=ImagePicker();
-  String? downloadUrl;
+  
+  File? _pickedImage;
+  Uint8List webImage = Uint8List(8);
 
-  Future imagePicker() async{
-    try {
-      final pick = await picker.pickImage(source: ImageSource.gallery);
+  
 
-    setState(() {
-      if(pick!=null){
-        _image=File(pick.path);
+
+  void addFieldtrip() async{
+    if (_pickedImage == null) {
+      print("Pick image");
+        // GlobalMethods.errorDialog(
+        //     subtitle: 'Please pick up an image', context: context);
+        return;
       }
-      else{
-        Text('no image selected');
-      }
-    });
-    } catch (e) {
-      Text(e.toString());
+      final _uuid = const Uuid().v4();
+      String ImgId=DateTime.now().microsecondsSinceEpoch.toString();
+      Reference refe=FirebaseStorage.instance.ref().child('images').child(_uuid + 'jpg');
+      final metadata = SettableMetadata(
+      contentType: 'image/jpeg',
+      customMetadata: {'picked-file-path': _pickedImage!.path},
+    );
+        final TaskSnapshot snapshot;
+        if (kIsWeb) {
+      snapshot = await refe.putData(webImage);
+    } else {
+      snapshot = await refe.putFile(_pickedImage!);
     }
-  }
+ 
+      String imageUri = await snapshot.ref.getDownloadURL();
 
-  Future uploadImage(File _image) async{
-    String url;
-    String ImgId=DateTime.now().microsecondsSinceEpoch.toString();
-    Reference ref=FirebaseStorage.instance.ref().child('images').child('users$ImgId');
-    await ref.putFile(_image);
-    url=await ref.getDownloadURL();
-    return url;
-  }
-
-  Future addFieldtrip(String ftitle,String subtitle, String tripoffered,String author,String level,String category, String description,String duration, String distance, String visitingeriod,  bool isChecked, bool isLimited, bool isProtected,bool isCharged) async{
-    final imgurl=await uploadImage(_image!);
-
-    await FirebaseFirestore.instance.collection('trips').add({
+    await FirebaseFirestore.instance.collection('trips').doc(_uuid).set({
+      "id": _uuid,
       "title": ftitle,
       "subtitle": subtitle,
       "trip offered by":tripoffered,
@@ -117,13 +109,44 @@ class _CreateFieldTripState extends State<CreateFieldTrip> {
       "duration": duration,
       "distance":distance,
       "visiting period": visitingeriod,
-    "need author display":isChecked,
-    "is access limited" :isLimited,
-    "park or protected area":isProtected,
-    "any fees":isCharged,
-    "images":imgurl,
+      "need author display":isChecked,
+      "is access limited" :isLimited,
+      "park or protected area":isProtected,
+      "any fees":isCharged,
+      "images":imageUri,
+      "created at":ImgId,
     });
+     _clearForm();
+        Fluttertoast.showToast(
+          msg: "FieldTrip Added Successfully",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+        );
 }
+
+ void _clearForm() {
+    ftitle="";
+    subtitle="";
+    tripoffered='Athabasca University';
+    author="";
+    level='Primary and Secondary Education(K-12)';
+    category='Applied Sciences and Technology';
+    description="";
+    duration='One day or less';
+    distance="";
+    visitingeriod='All year';
+    isChecked=false;
+    isLimited=false;
+    isProtected=false;
+    isCharged=false;
+    setState(() {
+      _pickedImage = null;
+      webImage = Uint8List(8);
+    });
+  }
+
+  
 
 
   @override
@@ -156,8 +179,7 @@ class _CreateFieldTripState extends State<CreateFieldTrip> {
         shrinkWrap: true,
         // fit: StackFit.expand,
         children: [
-          Expanded(
-          child: Center(
+          Center(
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(13.0),
@@ -717,44 +739,20 @@ class _CreateFieldTripState extends State<CreateFieldTrip> {
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
                         children: [
-                        
-                                 _image==null
-                                ? Text('no image selected')
-                                :Image.file(_image!),
-                              ElevatedButton(onPressed: (){
-                                imagePicker();
-                              }, child: Text('Select Image'))
+                          _pickedImage == null
+                                            ? dottedBorder(color: Colors.black)
+                                            : ClipRRect(
+                                               borderRadius:
+                                                    BorderRadius.circular(12),
+                                                child: kIsWeb
+                                                    ? Image.memory(webImage,
+                                                        fit: BoxFit.fill)
+                                                    : Image.file(_pickedImage!,
+                                                        fit: BoxFit.fill),
+                                              ),
                         ],
                       ),
                     ),
-                    // Padding(padding: const EdgeInsets.all(13.0),
-                    // child: Expanded(
-                    //   flex: 2,
-                    //   child: Container(
-                    //     width: 200,
-                    //     decoration: BoxDecoration(
-                    //       borderRadius: BorderRadius.circular(20),
-                    //       border: Border.all(color: Colors.lightGreen)
-                    //     ),
-                    //     child: Center(
-                    //       child: Column(
-                    //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //         children: [
-                    //           Expanded(
-                    //             child: _image==null
-                    //             ? Center(child: Text('no image selected'))
-                    //             :Image.file(_image!)
-                    //             ),
-                    //           ElevatedButton(onPressed: (){
-                    //             imagePicker();
-                    //           }, child: Text('Select Image'))
-                    //         ],
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),),
-                    
-        
                     Padding(
                       padding: const EdgeInsets.all(13.0),
                       child: ElevatedButton(
@@ -762,42 +760,24 @@ class _CreateFieldTripState extends State<CreateFieldTrip> {
                           primary: Colors.lightGreen,),
                         //color: Colors.blue,
                         onPressed: () {
-                          addFieldtrip(
-                              ftitle!,
-                              subtitle!,
-                              tripoffered!,
-                              author!,
-                              level!,
-                              category!,
-                              description!,
-                              duration!,
-                              distance!,
-                              visitingeriod!,
-                              isChecked,
-                              isLimited,
-                              isProtected,
-                              isCharged);
+                          addFieldtrip();
         
-                          showDialog<String>(
-                            context: context,
-                            builder: (BuildContext context) =>
-                                AlertDialog(
-                                  title: const Text('Fieldtrip form'),
-                                  content: const Text(
-                                      'This fieldtrip is created successfully'),
-                                  actions: <Widget>[
-                                    // TextButton(
-                                    //   onPressed: () => Navigator.pop(context, 'Cancel'),
-                                    //   child: const Text('Cancel'),
-                                    // ),
-                                    TextButton(
-                                      onPressed: () =>
-                                          Navigator.pop(context, 'OK'),
-                                      child: const Text('OK'),
-                                    ),
-                                  ],
-                                ),
-                          );
+                          // showDialog<String>(
+                          //   context: context,
+                          //   builder: (BuildContext context) =>
+                          //       AlertDialog(
+                          //         title: const Text('Fieldtrip form'),
+                          //         content: const Text(
+                          //             'This fieldtrip is created successfully'),
+                          //         actions: <Widget>[
+                          //           TextButton(
+                          //             onPressed: () =>
+                          //                 Navigator.pop(context, 'OK'),
+                          //             child: const Text('OK'),
+                          //           ),
+                          //         ],
+                          //       ),
+                          // );
                         },
                         child: Text("Click to Create"),
                       ),
@@ -808,10 +788,77 @@ class _CreateFieldTripState extends State<CreateFieldTrip> {
         
             ),
           ),
-        ),
 
         ],
       ),
+    );
+  }
+
+
+Future<void> _pickImage() async {
+    if (!kIsWeb) {
+      final ImagePicker _picker = ImagePicker();
+      XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+      if (image != null) {
+        var selected = File(image.path);
+        setState(() {
+          _pickedImage = selected;
+        });
+      } else {
+        print('No image has been picked');
+      }
+    } else if (kIsWeb) {
+      final ImagePicker _picker = ImagePicker();
+      XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+      if (image != null) {
+        var f = await image.readAsBytes();
+        setState(() {
+          webImage = f;
+          _pickedImage = File('a');
+        });
+      } else {
+        print('No image has been picked');
+      }
+    } else {
+      print('Something went wrong');
+    }
+  }
+
+Widget dottedBorder({
+    required Color color,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: DottedBorder(
+          dashPattern: const [6.7],
+          borderType: BorderType.RRect,
+          color: color,
+          radius: const Radius.circular(12),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.image_outlined,
+                  color: color,
+                  size: 50,
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                TextButton(
+                    onPressed: (() {
+                      _pickImage();
+                    }),
+                    child: Text(
+                      'Choose an image',
+                      // style: color,
+                      // color: Colors.blue,
+                    ))
+              ],
+            ),
+          )),
     );
   }
 }
