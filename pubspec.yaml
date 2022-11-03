@@ -93,8 +93,32 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-     - images/logo.png
-     - images/logouni.png
+    - images/logo.png
+    - images/logouni.png
+    - images/mfieldtrip_icons_images/all_year.png
+    - images/mfieldtrip_icons_images/spring.png
+    - images/mfieldtrip_icons_images/summer.png
+    - images/mfieldtrip_icons_images/fall.png
+    - images/mfieldtrip_icons_images/winter.png
+    - images/mfieldtrip_icons_images/limited_access.png
+    - images/mfieldtrip_icons_images/fees.png
+    - images/mfieldtrip_icons_images/park.png
+    - images/mfieldtrip_icons_images/no_fall.png
+    - images/mfieldtrip_icons_images/no_winter.png
+    - images/mfieldtrip_icons_images/no_summer.png
+    - images/mfieldtrip_icons_images/no_spring.png
+    - images/mfieldtrip_icons_images/spring_summer.png
+    - images/mfieldtrip_icons_images/summer_fall.png
+    - images/mfieldtrip_icons_images/summer_winter.png
+    - images/mfieldtrip_icons_images/duration_one.png
+    - images/mfieldtrip_icons_images/duration_two.png
+    - images/mfieldtrip_icons_images/duration_four.png
+    - images/mfieldtrip_icons_images/winter_fall.png
+    - images/mfieldtrip_icons_images/distance.png
+    - images/mfieldtrip_icons_images/spring_fall.png
+    - images/mfieldtrip_icons_images/spring_winter.png
+
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
