@@ -1,45 +1,96 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:mfieldtrip/my_custom_icons_icons.dart';
+import 'package:gap/gap.dart';
+import 'package:mfieldtrip/utils/app_layout.dart';
 
 class SepFieldTrips extends StatelessWidget {
   
   final DocumentSnapshot documentSnapshot;
   const SepFieldTrips({Key? key, required this.documentSnapshot}) : super(key: key);
-  _getApplicablePeriod(String visitingPeriod) {
-    switch (visitingPeriod) {
-      case "Spring":
-        return Image(image: AssetImage('images/mfieldtrip_icons_images/spring.png'), width: 200, height: 200, fit: BoxFit.fill,);
-        // return Icon(MyCustomIcons.spring,size: 50,color: Color.fromARGB(255, 117, 116, 116),);
-      case "Summer":
-        return Image(image: AssetImage('images/mfieldtrip_icons_images/summer.png'), width: 200, height: 200, fit: BoxFit.fill,);
-        // return Icon(MyCustomIcons.summer,size: 50,color: Color.fromARGB(255, 117, 116, 116),);
-      case "Winter":
-        return Image(image: AssetImage('images/mfieldtrip_icons_images/winter.png'), width: 200, height: 200, fit: BoxFit.fill,);
-        // return Icon(MyCustomIcons.winter,size: 50,color: Color.fromARGB(255, 117, 116, 116),);
-      default:
-        return Image(image: AssetImage('images/mfieldtrip_icons_images/all_year.png'), width: 200, height: 200, fit: BoxFit.fill,);
-        // return Icon(MyCustomIcons.all_year,size: 50,color: Color.fromARGB(255, 117, 116, 116),);
+  _getApplicablePeriod(List visitingPeriod) {
+    String period;
+    int fall_count=0;
+    int spring_count=0;
+    int summer_count=0;
+    int  winter_count=0;
+    int l=visitingPeriod.length;
+    for(int i=0;i<visitingPeriod.length;i++){
+    if((l==2 && visitingPeriod[i]=='Spring' && visitingPeriod[i+1]=='Summer')|| (l==2 && visitingPeriod[i]=='Summer' && visitingPeriod[i+1]=='Spring')){
+      return Image(image: AssetImage("images/mfieldtrip_icons_images/spring_summer.png"), fit: BoxFit.fill,);
+    }
+    else if((l==2 && visitingPeriod[i]=='Fall' && visitingPeriod[i+1]=='Winter')|| (l==2 && visitingPeriod[i]=='Winter' && visitingPeriod[i+1]=='Fall')){
+      return Image(image: AssetImage("images/mfieldtrip_icons_images/winter_fall.png"), fit: BoxFit.fill,);
+    }
+    else if((l==2 && visitingPeriod[i]=='Spring' && visitingPeriod[i+1]=='Fall')|| (l==2 && visitingPeriod[i]=='Fall' && visitingPeriod[i+1]=='Spring')){
+      return Image(image: AssetImage("images/mfieldtrip_icons_images/spring_fall.png"),fit: BoxFit.fill,);
+    }
+    else if((l==2 && visitingPeriod[i]=='Spring' && visitingPeriod[i+1]=='Winter')|| (l==2 && visitingPeriod[i]=='Winter' && visitingPeriod[i+1]=='Spring')){
+      return Image(image: AssetImage("images/mfieldtrip_icons_images/spring_winter.png"), fit: BoxFit.fill,);
+    }
+    else if((l==2 && visitingPeriod[i]=='Fall' && visitingPeriod[i+1]=='Summer')|| (l==2 && visitingPeriod[i]=='Summer' && visitingPeriod[i+1]=='Fall')){
+      return Image(image: AssetImage("images/mfieldtrip_icons_images/summer_fall.png"), fit: BoxFit.fill,);
+    }
+    else if((l==2 && visitingPeriod[i]=='Winter' && visitingPeriod[i+1]=='Summer')|| (l==2 && visitingPeriod[i]=='Summer' && visitingPeriod[i+1]=='Winter')){
+      return Image(image: AssetImage("images/mfieldtrip_icons_images/summer_winter.png"),  fit: BoxFit.fill,);
+    }
+    else if((l==1 && visitingPeriod[i]=='Spring')){
+      return Image(image: AssetImage("images/mfieldtrip_icons_images/spring.png"), fit: BoxFit.fill,);
+    }
+    else if((l==1 && visitingPeriod[i]=='Summer')){
+      return Image(image: AssetImage("images/mfieldtrip_icons_images/summer.png"),  fit: BoxFit.fill,);
+    }
+    else if((l==1 && visitingPeriod[i]=='Winter')){
+      return Image(image: AssetImage("images/mfieldtrip_icons_images/winter.png"), fit: BoxFit.fill,);
+    }
+    else if((l==1 && visitingPeriod[i]=='Fall')){
+      return Image(image: AssetImage("images/mfieldtrip_icons_images/fall.png"),  fit: BoxFit.fill,);
+    }
+    else if((l==3 && visitingPeriod[i]!='Fall')){
+      fall_count++;
+    }
+    else if((l==3 && visitingPeriod[i]!='Winter')){
+      winter_count++;
+    }
+    else if((l==3 && visitingPeriod[i]!='Summer')){
+      summer_count++;
+    }
+    else if((l==3 && visitingPeriod[i]!='Spring')){
+      spring_count++;
+    }
+    else{
+      return Image(image: AssetImage("images/mfieldtrip_icons_images/all_year.png"),  fit: BoxFit.fill,);
+    }
+    }
+    if(spring_count==3){
+      return Image(image: AssetImage("images/mfieldtrip_icons_images/no_spring.png"),  fit: BoxFit.fill,);
+    }
+    if(summer_count==3){
+      return Image(image: AssetImage("images/mfieldtrip_icons_images/no_summer.png"), fit: BoxFit.fill,);
+    }
+    if(fall_count==3){
+      return Image(image: AssetImage("images/mfieldtrip_icons_images/no_fall.png"),  fit: BoxFit.fill,);
+    }
+    if(winter_count==3){
+      return Image(image: AssetImage("images/mfieldtrip_icons_images/no_winter.png"),  fit: BoxFit.fill,);
+    }
+    else{
+      return Image(image: AssetImage("images/mfieldtrip_icons_images/all_year.png"),  fit: BoxFit.fill,);
+
     }
   }
     _getApplicableDuration(String duration) {
     switch (duration) {
       case "one day or less":
-        return Image(image: AssetImage('images/mfieldtrip_icons_images/duration_one.png'), width: 200, height: 200, fit: BoxFit.fill,);
-        // return Icon(MyCustomIcons.duration_one,size: 50,color: Color.fromARGB(255, 117, 116, 116),);
+        return Image(image: AssetImage('images/mfieldtrip_icons_images/duration_one.png'), fit: BoxFit.fill,);
       case "two to four days":
-        return Image(image: AssetImage('images/mfieldtrip_icons_images/duration_two.png'), width: 200, height: 200, fit: BoxFit.fill,);
-        // return Icon(MyCustomIcons.duration_two,size: 50,color: Color.fromARGB(255, 117, 116, 116),);
-      // case "Winter":
-      //   return Icon(MyCustomIcons.calendar_mouse,size: 50,);
+        return Image(image: AssetImage('images/mfieldtrip_icons_images/duration_two.png'),  fit: BoxFit.fill,);
       default:
-        return Image(image: AssetImage('images/mfieldtrip_icons_images/duration_four.png'), width: 200, height: 200, fit: BoxFit.fill,);
-        // return Icon(MyCustomIcons.duration_four,size: 50,color: Color.fromARGB(255, 117, 116, 116),);
+        return Image(image: AssetImage('images/mfieldtrip_icons_images/duration_four.png'), fit: BoxFit.fill,);
     }
   }
-
   @override
   Widget build(BuildContext context) {
+      final size=AppLayout.getSize(context);
     return Scaffold(
      
       backgroundColor: Colors.lime[100],
@@ -80,7 +131,7 @@ class SepFieldTrips extends StatelessWidget {
                   ),
                 ),
                 ),
-                Card(
+                documentSnapshot['need author display']? Card(
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: SizedBox(
@@ -94,7 +145,7 @@ class SepFieldTrips extends StatelessWidget {
                       ),
                     ),
                   ),
-                ),
+                ): Gap(3),
                 Card(
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
@@ -113,24 +164,30 @@ class SepFieldTrips extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _getApplicableDuration(documentSnapshot['duration']),
-                          _getApplicablePeriod(documentSnapshot['visiting period']),
-                          documentSnapshot['is access limited']==true ?  Image(image: AssetImage('images/mfieldtrip_icons_images/limited_access.png'), width: 200, height: 200, fit: BoxFit.fill,) : Image(image: AssetImage('images/mfieldtrip_icons_images/limited_access.png'), colorBlendMode: BlendMode.darken, width: 200, height: 200, fit: BoxFit.fill,),
-                          // documentSnapshot['is access limited']==true ?  Icon(MyCustomIcons.limited_access,size: 50,color: Color.fromARGB(255, 117, 116, 116),) : Icon(MyCustomIcons.limited_access,size: 50, color:Color.fromARGB(255, 214, 214, 215)),
-                          documentSnapshot['park or protected area']==true ? Image(image: AssetImage('images/mfieldtrip_icons_images/park.png'), width: 200, height: 200, fit: BoxFit.fill,) : Image(image: AssetImage('images/mfieldtrip_icons_images/park.png'), colorBlendMode: BlendMode.darken, width: 200, height: 200, fit: BoxFit.fill,),
-                          // documentSnapshot['park or protected area']==true ?  Icon(MyCustomIcons.park,size: 50,color: Color.fromARGB(255, 117, 116, 116),) : Icon(MyCustomIcons.park,size: 50,color:Color.fromARGB(255, 214, 214, 215)),
-                          documentSnapshot['any fees']==true ?  Image(image: AssetImage('images/mfieldtrip_icons_images/fees.png'), width: 200, height: 200, fit: BoxFit.fill,) : Image(image: AssetImage('images/mfieldtrip_icons_images/fees.png'), colorBlendMode: BlendMode.darken, width: 200, height: 200, fit: BoxFit.fill,),
-                          // documentSnapshot['any fees']==true ?  Icon(MyCustomIcons.fees,size: 50,color: Color.fromARGB(255, 117, 116, 116),) : Icon(MyCustomIcons.fees,size: 50,color:Color.fromARGB(255, 214, 214, 215)),
-                          Stack(
+                         SizedBox(width: size.width*0.14, child: _getApplicableDuration(documentSnapshot['duration']),),
+                          SizedBox(width: size.width*0.14, child: _getApplicablePeriod(documentSnapshot['visiting period']),),
+                          SizedBox(
+                            width: size.width*0.14,
+                            child: documentSnapshot['is access limited']==true ?  Image(image: AssetImage('images/mfieldtrip_icons_images/limited_access.png'), fit: BoxFit.fill,) : Image(image: AssetImage('images/mfieldtrip_icons_images/limited_access.png'), colorBlendMode: BlendMode.darken,  fit: BoxFit.fill,)),
+                           SizedBox(
+                            width: size.width*0.14,
+                            child:documentSnapshot['park or protected area']==true ? Image(image: AssetImage('images/mfieldtrip_icons_images/park.png'), fit: BoxFit.fill,) : Image(image: AssetImage('images/mfieldtrip_icons_images/park.png'), colorBlendMode: BlendMode.darken,  fit: BoxFit.fill,),),
+                           SizedBox(
+                            width: size.width*0.14,
+                            child:documentSnapshot['any fees']==true ?  Image(image: AssetImage('images/mfieldtrip_icons_images/fees.png'), fit: BoxFit.fill,) : Image(image: AssetImage('images/mfieldtrip_icons_images/fees.png'), colorBlendMode: BlendMode.darken,  fit: BoxFit.fill,),),
+                          SizedBox(
+                           width: size.width*0.14,
+                            child: Stack(
       children: <Widget>[
         Container(
           alignment: Alignment.center,
-          child: Image(image: AssetImage('images/mfieldtrip_icons_images/distance.png'), height: 200,width: 200,fit: BoxFit.fill,),),
+          child: Image(image: AssetImage('images/mfieldtrip_icons_images/distance.png'), fit: BoxFit.fill,),),
         Container(
             alignment: Alignment.center,
             child: Text(
               documentSnapshot['distance']+' KM',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 40.0),)),],),
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),)),],),
+                          ),
                       ],
                       ),
                   ),

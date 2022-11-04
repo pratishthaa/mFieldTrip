@@ -1,6 +1,4 @@
 import 'dart:io';
-// ignore: deprecated_member_use
-import 'package:firebase/firebase.dart' as fb;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -9,6 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mfieldtrip/utils/app_layout.dart';
+import 'package:mfieldtrip/utils/app_styles.dart';
+import 'package:mfieldtrip/widgets/multiple_selection.dart';
 import 'package:uuid/uuid.dart';
 import 'package:dotted_border/dotted_border.dart';
 
@@ -54,7 +55,9 @@ class _CreateFieldTripState extends State<CreateFieldTrip> {
       'two to four days',
       'more than four days',
   ];
-  String? visitingeriod;
+    List<String> _VisitPeriods = [];
+
+  void _showVisitPeriodOptions() async {
   final List<String> periods = [
     'All year',
       'Summer',
@@ -62,6 +65,20 @@ class _CreateFieldTripState extends State<CreateFieldTrip> {
       'Winter',
       'Fall',
   ];
+  final List<String>? results = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return MultipleSelection(items: periods);
+      },
+    );
+
+    // Update UI
+    if (results != null) {
+      setState(() {
+        _VisitPeriods = results;
+      });
+    }
+  }
 
   bool isChecked = false;
   bool isLimited=false;
@@ -77,8 +94,6 @@ class _CreateFieldTripState extends State<CreateFieldTrip> {
   void addFieldtrip() async{
     if (_pickedImage == null) {
       print("Pick image");
-        // GlobalMethods.errorDialog(
-        //     subtitle: 'Please pick up an image', context: context);
         return;
       }
       final _uuid = const Uuid().v4();
@@ -108,7 +123,7 @@ class _CreateFieldTripState extends State<CreateFieldTrip> {
       "description":description,
       "duration": duration,
       "distance":distance,
-      "visiting period": visitingeriod,
+      "visiting period": _VisitPeriods,
       "need author display":isChecked,
       "is access limited" :isLimited,
       "park or protected area":isProtected,
@@ -135,7 +150,7 @@ class _CreateFieldTripState extends State<CreateFieldTrip> {
     description="";
     duration='One day or less';
     distance="";
-    visitingeriod='All year';
+    _VisitPeriods=[];
     isChecked=false;
     isLimited=false;
     isProtected=false;
@@ -162,7 +177,9 @@ class _CreateFieldTripState extends State<CreateFieldTrip> {
       }
       return Colors.lightGreen;
     }
+    final size=AppLayout.getSize(context);
     return Scaffold(
+      backgroundColor: primary,
       appBar:
       PreferredSize(
         preferredSize: Size.fromHeight(55.0),
@@ -175,621 +192,573 @@ class _CreateFieldTripState extends State<CreateFieldTrip> {
           ), backgroundColor: Colors.lightGreen,
         ),
       ),
-      body: ListView(
-        shrinkWrap: true,
-        // fit: StackFit.expand,
-        children: [
-          Center(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(13.0),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextField(
-                        // controller: _ftitlecontroller,
-                        decoration: InputDecoration(
-                          labelText: 'Enter title here',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                            borderSide: BorderSide(
-                              color: Colors.lightGreen,
-                              width: 2.0,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                            borderSide: BorderSide(
-                              color: Colors.lightGreen,
-                              width: 2.0,
-                            ),),
-                          labelStyle: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 10.0,
-                          ),
-                        ),
-                        onChanged: (val) {
-                          ftitle = (val);
-                        },
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(13.0),
-                      child: TextField(
-                        decoration: InputDecoration(
-                          labelText: 'Enter Subtitle here',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                            borderSide: BorderSide(
-                              color: Colors.lightGreen,
-                              width: 2.0,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                            borderSide: BorderSide(
-                              color: Colors.lightGreen,
-                              width: 2.0,
-                            ),),
-                          labelStyle: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 10.0,
-                          ),
-                        ),
-                        maxLines: 4,
-                        // expands: true,
-                        onChanged: (val) {
-                          subtitle = (val);
-                        },
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(13.0),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButtonFormField2(
-                          decoration: InputDecoration(
-                            isDense: true,
-                            contentPadding: EdgeInsets.zero,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              borderSide: BorderSide(
-                                color: Colors.lightGreen,
-                                width: 2.0,
+      body: Center(
+        child: Container(
+          color: Colors.white,
+          width: (size.width>600)? 700 : size.width*0.9,
+          
+          child: ListView(
+            shrinkWrap: true,
+            // fit: StackFit.expand,
+            children: [
+              Center(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(6),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextField(
+                            // controller: _ftitlecontroller,
+                            decoration: InputDecoration(
+                              labelText: 'Enter title here',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30),
+                                borderSide: BorderSide(
+                                  color: Colors.lightGreen,
+                                  width: 2.0,
+                                ),
                               ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              borderSide: BorderSide(
-                                color: Colors.lightGreen,
-                                width: 2.0,
-                              ),),
-                          ),
-                          hint: Padding(
-                            padding: const EdgeInsets.all(11.0),
-                            child: Text(
-                              'Trip Offered by',
-                              style: TextStyle(
-                                fontSize: 10,
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30),
+                                borderSide: BorderSide(
+                                  color: Colors.lightGreen,
+                                  width: 2.0,
+                                ),),
+                              labelStyle: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                color: Theme
-                                    .of(context)
-                                    .hintColor,
+                                fontSize: 10.0,
                               ),
                             ),
+                            onChanged: (val) {
+                              ftitle = (val);
+                            },
                           ),
-                          items: tripofferedby
-                              .map((item) =>
-                              DropdownMenuItem<String>(
-                                value: item,
-                                child: Text(
-                                  item,
-                                  style: const TextStyle(
-                                    fontSize: 14,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(13.0),
+                          child: TextField(
+                            decoration: InputDecoration(
+                              labelText: 'Enter Subtitle here',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30),
+                                borderSide: BorderSide(
+                                  color: Colors.lightGreen,
+                                  width: 2.0,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30),
+                                borderSide: BorderSide(
+                                  color: Colors.lightGreen,
+                                  width: 2.0,
+                                ),),
+                              labelStyle: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 10.0,
+                              ),
+                            ),
+                            maxLines: 4,
+                            // expands: true,
+                            onChanged: (val) {
+                              subtitle = (val);
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(13.0),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButtonFormField2(
+                              decoration: InputDecoration(
+                                isDense: true,
+                                contentPadding: EdgeInsets.zero,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                  borderSide: BorderSide(
+                                    color: Colors.lightGreen,
+                                    width: 2.0,
                                   ),
                                 ),
-                              ))
-                              .toList(),
-                          value: tripoffered,
-                          onChanged: (value) {
-                            setState(() {
-                              tripoffered = value as String;
-                            });
-                          },
-                          buttonHeight: 40,
-                          buttonWidth: 240,
-                          itemHeight: 40,
-                        ),
-                      ),
-                    ),
-        
-                    Padding(
-                      padding: const EdgeInsets.all(13.0),
-                      child: TextField(
-                        decoration: InputDecoration(
-                          labelText: 'Author(s)',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5),
-                            borderSide: BorderSide(
-                              color: Colors.lightGreen,
-                              width: 1.0,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                            borderSide: BorderSide(
-                              color: Colors.lightGreen,
-                              width: 2.0,
-                            ),
-                          ),
-                          labelStyle: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 10.0,
-                          ),
-                        ),
-                        onChanged: (val) {
-                          author = (val);
-                        },
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(13.0),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButtonFormField2(
-                          decoration: InputDecoration(
-                            isDense: true,
-                            contentPadding: EdgeInsets.zero,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              borderSide: BorderSide(
-                                color: Colors.lightGreen,
-                                width: 2.0,
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                  borderSide: BorderSide(
+                                    color: Colors.lightGreen,
+                                    width: 2.0,
+                                  ),),
                               ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              borderSide: BorderSide(
-                                color: Colors.lightGreen,
-                                width: 2.0,
-                              ),),
-                          ),
-                          hint: Padding(
-                            padding: const EdgeInsets.all(11.0),
-                            child: Text(
-                              'Level',
-                              style: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                                color: Theme
-                                    .of(context)
-                                    .hintColor,
-                              ),
-                            ),
-                          ),
-                          items: levels
-                              .map((item) =>
-                              DropdownMenuItem<String>(
-                                value: item,
+                              hint: Padding(
+                                padding: const EdgeInsets.all(11.0),
                                 child: Text(
-                                  item,
-                                  style: const TextStyle(
-                                    fontSize: 14,
+                                  'Trip Offered by',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme
+                                        .of(context)
+                                        .hintColor,
                                   ),
                                 ),
-                              ))
-                              .toList(),
-                          value: level,
-                          onChanged: (value) {
-                            setState(() {
-                              level = value as String;
-                            });
-                          },
-                          buttonHeight: 40,
-                          buttonWidth: 240,
-                          itemHeight: 40,
+                              ),
+                              items: tripofferedby
+                                  .map((item) =>
+                                  DropdownMenuItem<String>(
+                                    value: item,
+                                    child: Text(
+                                      item,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ))
+                                  .toList(),
+                              value: tripoffered,
+                              onChanged: (value) {
+                                setState(() {
+                                  tripoffered = value as String;
+                                });
+                              },
+                              buttonHeight: 40,
+                              buttonWidth: 240,
+                              itemHeight: 40,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-        
-                    Padding(
-                      padding: const EdgeInsets.all(13.0),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButtonFormField2(
-                          decoration: InputDecoration(
-                            isDense: true,
-                            contentPadding: EdgeInsets.zero,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              borderSide: BorderSide(
-                                color: Colors.lightGreen,
-                                width: 2.0,
+            
+                        Padding(
+                          padding: const EdgeInsets.all(13.0),
+                          child: TextField(
+                            decoration: InputDecoration(
+                              labelText: 'Author(s)',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5),
+                                borderSide: BorderSide(
+                                  color: Colors.lightGreen,
+                                  width: 1.0,
+                                ),
                               ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              borderSide: BorderSide(
-                                color: Colors.lightGreen,
-                                width: 2.0,
-                              ),),
-                          ),
-                          hint: Padding(
-                            padding: const EdgeInsets.all(11.0),
-                            child: Text(
-                              'Category',
-                              style: TextStyle(
-                                fontSize: 10,
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30),
+                                borderSide: BorderSide(
+                                  color: Colors.lightGreen,
+                                  width: 2.0,
+                                ),
+                              ),
+                              labelStyle: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                color: Theme
-                                    .of(context)
-                                    .hintColor,
+                                fontSize: 10.0,
                               ),
                             ),
+                            onChanged: (val) {
+                              author = (val);
+                            },
                           ),
-                          items: categories
-                              .map((item) =>
-                              DropdownMenuItem<String>(
-                                value: item,
-                                child: Text(
-                                  item,
-                                  style: const TextStyle(
-                                    fontSize: 14,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(13.0),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButtonFormField2(
+                              decoration: InputDecoration(
+                                isDense: true,
+                                contentPadding: EdgeInsets.zero,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                  borderSide: BorderSide(
+                                    color: Colors.lightGreen,
+                                    width: 2.0,
                                   ),
                                 ),
-                              ))
-                              .toList(),
-                          value: category,
-                          onChanged: (value) {
-                            setState(() {
-                              category = value as String;
-                            });
-                          },
-                          buttonHeight: 40,
-                          buttonWidth: 240,
-                          itemHeight: 40,
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                  borderSide: BorderSide(
+                                    color: Colors.lightGreen,
+                                    width: 2.0,
+                                  ),),
+                              ),
+                              hint: Padding(
+                                padding: const EdgeInsets.all(11.0),
+                                child: Text(
+                                  'Level',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme
+                                        .of(context)
+                                        .hintColor,
+                                  ),
+                                ),
+                              ),
+                              items: levels
+                                  .map((item) =>
+                                  DropdownMenuItem<String>(
+                                    value: item,
+                                    child: Text(
+                                      item,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ))
+                                  .toList(),
+                              value: level,
+                              onChanged: (value) {
+                                setState(() {
+                                  level = value as String;
+                                });
+                              },
+                              buttonHeight: 40,
+                              buttonWidth: 240,
+                              itemHeight: 40,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-        
-                    Padding(
-                      padding: const EdgeInsets.all(13.0),
-                      child: Wrap(
-                        direction: Axis.vertical,
-                        crossAxisAlignment: WrapCrossAlignment.start,
-                        children: [
-                          Row(
+            
+                        Padding(
+                          padding: const EdgeInsets.all(13.0),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButtonFormField2(
+                              decoration: InputDecoration(
+                                isDense: true,
+                                contentPadding: EdgeInsets.zero,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                  borderSide: BorderSide(
+                                    color: Colors.lightGreen,
+                                    width: 2.0,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                  borderSide: BorderSide(
+                                    color: Colors.lightGreen,
+                                    width: 2.0,
+                                  ),),
+                              ),
+                              hint: Padding(
+                                padding: const EdgeInsets.all(11.0),
+                                child: Text(
+                                  'Category',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme
+                                        .of(context)
+                                        .hintColor,
+                                  ),
+                                ),
+                              ),
+                              items: categories
+                                  .map((item) =>
+                                  DropdownMenuItem<String>(
+                                    value: item,
+                                    child: Text(
+                                      item,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ))
+                                  .toList(),
+                              value: category,
+                              onChanged: (value) {
+                                setState(() {
+                                  category = value as String;
+                                });
+                              },
+                              buttonHeight: 40,
+                              buttonWidth: 240,
+                              itemHeight: 40,
+                            ),
+                          ),
+                        ),
+            
+                        Padding(
+                          padding: const EdgeInsets.all(13.0),
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                              labelText: 'Description',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30),
+                                borderSide: BorderSide(
+                                  color: Colors.lightGreen,
+                                  width: 2.0,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30),
+                                borderSide: BorderSide(
+                                  color: Colors.lightGreen,
+                                  width: 2.0,
+                                ),),
+                              labelStyle: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 10.0,
+                              ),
+                            ),
+                            maxLines: 6,
+                            // expands:true,
+                            onChanged: (val) {
+                              description = (val);
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(13.0),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButtonFormField2(
+                              decoration: InputDecoration(
+                                isDense: true,
+                                contentPadding: EdgeInsets.zero,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                  borderSide: BorderSide(
+                                    color: Colors.lightGreen,
+                                    width: 2.0,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                  borderSide: BorderSide(
+                                    color: Colors.lightGreen,
+                                    width: 2.0,
+                                  ),),
+                              ),
+                              hint: Padding(
+                                padding: const EdgeInsets.all(11.0),
+                                child: Text(
+                                  'Duration',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme
+                                        .of(context)
+                                        .hintColor,
+                                  ),
+                                ),
+                              ),
+                              items: durations
+                                  .map((item) =>
+                                  DropdownMenuItem<String>(
+                                    value: item,
+                                    child: Text(
+                                      item,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ))
+                                  .toList(),
+                              value: duration,
+                              onChanged: (value) {
+                                setState(() {
+                                  duration = value as String;
+                                });
+                              },
+                              buttonHeight: 40,
+                              buttonWidth: 240,
+                              itemHeight: 40,
+                            ),
+                          ),
+                        ),
+            
+                        Padding(
+                          padding: const EdgeInsets.all(13.0),
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                              labelText: 'Distance(KM)',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30),
+                                borderSide: BorderSide(
+                                  color: Colors.lightGreen,
+                                  width: 2.0,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30),
+                                borderSide: BorderSide(
+                                  color: Colors.lightGreen,
+                                  width: 2.0,
+                                ),),
+                              labelStyle: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 10.0,
+                              ),
+                            ),
+                            onChanged: (val) {
+                              distance = val;
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(13.0),
+                          child: Row(
+                                children: [
+                                  Checkbox(
+                                      checkColor: Colors.white,
+                                      fillColor: MaterialStateProperty.resolveWith(
+                                          getColor),
+                                      value: isLimited,
+                                      onChanged: (bool? value) {
+                                        setState(() {
+                                          isLimited = value!;
+                                        });
+                                      },
+                                    ),
+                                     Text(
+                                      'Check to display Author information',
+                                      style: Styles.headLineStyle3.copyWith(color: Colors.black),)
+                                ],
+                              ),
+                        ),
+
+                        Padding(
+                          padding: const EdgeInsets.all(13.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            // mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Checkbox(
-                                checkColor: Colors.white,
-                                fillColor: MaterialStateProperty.resolveWith(
-                                    getColor),
-                                value: isChecked,
-                                onChanged: (bool? value) {
-                                  setState(() {
-                                    isChecked = value!;
-                                  });
-                                },
+                              // use this button to open the multi-select dialog
+                              ElevatedButton(
+                                onPressed: _showVisitPeriodOptions,
+                                style: ElevatedButton.styleFrom(side: BorderSide(width: 2, color: Colors.black,), backgroundColor: Colors.white),
+                                child:  Text('Select Visiting Periods', style: Styles.headLineStyle4.copyWith(color: Colors.black),),
                               ),
-                              const Text('Check to display Author information')
+                              // const Gap(3),
+                              const Divider(
+                                height: 10,
+                              ),
+                              // display selected items
+                              Wrap(
+                                children: _VisitPeriods
+                                    .map((e) => Chip(
+                                          label: Text(e),
+                                        ))
+                                    .toList(),
+                              )
                             ],
                           ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(13.0),
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          labelText: 'Description',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                            borderSide: BorderSide(
-                              color: Colors.lightGreen,
-                              width: 2.0,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                            borderSide: BorderSide(
-                              color: Colors.lightGreen,
-                              width: 2.0,
-                            ),),
-                          labelStyle: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 10.0,
-                          ),
                         ),
-                        maxLines: 6,
-                        // expands:true,
-                        onChanged: (val) {
-                          description = (val);
-                        },
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(13.0),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButtonFormField2(
-                          decoration: InputDecoration(
-                            isDense: true,
-                            contentPadding: EdgeInsets.zero,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              borderSide: BorderSide(
-                                color: Colors.lightGreen,
-                                width: 2.0,
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              borderSide: BorderSide(
-                                color: Colors.lightGreen,
-                                width: 2.0,
-                              ),),
-                          ),
-                          hint: Padding(
-                            padding: const EdgeInsets.all(11.0),
-                            child: Text(
-                              'Duration',
-                              style: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                                color: Theme
-                                    .of(context)
-                                    .hintColor,
-                              ),
-                            ),
-                          ),
-                          items: durations
-                              .map((item) =>
-                              DropdownMenuItem<String>(
-                                value: item,
-                                child: Text(
-                                  item,
-                                  style: const TextStyle(
-                                    fontSize: 14,
+                        Padding(padding: const EdgeInsets.all(13),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                             Text('Limited Access', style: Styles.headLineStyle2,),
+                            Row(
+                              children: [
+                                Checkbox(
+                                    checkColor: Colors.white,
+                                    fillColor: MaterialStateProperty.resolveWith(
+                                        getColor),
+                                    value: isLimited,
+                                    onChanged: (bool? value) {
+                                      setState(() {
+                                        isLimited = value!;
+                                      });
+                                    },
                                   ),
-                                ),
-                              ))
-                              .toList(),
-                          value: duration,
-                          onChanged: (value) {
-                            setState(() {
-                              duration = value as String;
-                            });
-                          },
-                          buttonHeight: 40,
-                          buttonWidth: 240,
-                          itemHeight: 40,
+                                  Text(
+                                    'Check if one site or more stops may not be accessible at all times of the day or year.',
+                                    style: Styles.headLineStyle4.copyWith(color: Colors.black),),
+                              ],
+                            )
+                          ],
                         ),
-                      ),
-                    ),
-        
-                    Padding(
-                      padding: const EdgeInsets.all(13.0),
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          labelText: 'Distance(KM)',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                            borderSide: BorderSide(
-                              color: Colors.lightGreen,
-                              width: 2.0,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                            borderSide: BorderSide(
-                              color: Colors.lightGreen,
-                              width: 2.0,
-                            ),),
-                          labelStyle: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 10.0,
-                          ),
                         ),
-                        onChanged: (val) {
-                          distance = val;
-                        },
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(13.0),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButtonFormField2(
-                          decoration: InputDecoration(
-                            isDense: true,
-                            contentPadding: EdgeInsets.zero,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              borderSide: BorderSide(
-                                color: Colors.lightGreen,
-                                width: 2.0,
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              borderSide: BorderSide(
-                                color: Colors.lightGreen,
-                                width: 2.0,
-                              ),),
-                          ),
-                          hint: Padding(
-                            padding: const EdgeInsets.all(11.0),
-                            child: Text(
-                              'Visiting Period',
-                              style: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                                  color: Theme
-                                    .of(context)
-                                    .hintColor,
-                              ),
-                            ),
-                          ),
-                          items: periods
-                              .map((item) =>
-                              DropdownMenuItem<String>(
-                                value: item,
-                                child: Text(
-                                  item,
-                                  style: const TextStyle(
-                                    fontSize: 14,
+                        Padding(padding: const EdgeInsets.all(13),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                             Text('Park or Protected Area', style: Styles.headLineStyle2,),
+                            Row(
+                              children: [
+                                Checkbox(
+                                    checkColor: Colors.white,
+                                    fillColor: MaterialStateProperty.resolveWith(
+                                        getColor),
+                                    value: isLimited,
+                                    onChanged: (bool? value) {
+                                      setState(() {
+                                        isLimited = value!;
+                                      });
+                                    },
                                   ),
-                                ),
-                              ))
-                              .toList(),
-                          value: visitingeriod,
-                          onChanged: (value) {
-                            setState(() {
-                              visitingeriod = value as String;
-                            });
-                          },
-                          buttonHeight: 40,
-                          buttonWidth: 240,
-                          itemHeight: 40,
+                                  Text(
+                                    'Check if one or more stops are located within a park, or reserve, or any other protected area.',
+                                    style: Styles.headLineStyle4.copyWith(color: Colors.black),)
+                              ],
+                            ),
+                          ],
                         ),
-                      ),
-                    ),
-        
-                    Padding(
-                      padding: const EdgeInsets.all(13.0),
-                      child: Wrap(
-                        direction: Axis.vertical,
-                        crossAxisAlignment: WrapCrossAlignment.start,
-                        children: [
-                          const Text('Limited Access'),
-                          Row(
+                        ),
+                        Padding(padding: const EdgeInsets.all(13),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                             Text('Entrance or Admission Fees', style: Styles.headLineStyle2,),
+                            Row(
+                              children: [
+                                Checkbox(
+                                    checkColor: Colors.white,
+                                    fillColor: MaterialStateProperty.resolveWith(
+                                        getColor),
+                                    value: isLimited,
+                                    onChanged: (bool? value) {
+                                      setState(() {
+                                        isLimited = value!;
+                                      });
+                                    },
+                                  ),
+                                  Text(
+                                    'Check if one or more stops have entrance/admission fees.',
+                                    style: Styles.headLineStyle4.copyWith(color: Colors.black),)
+                              ],
+                            )
+                          ],
+                        ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
                             children: [
-                              Checkbox(
-                                checkColor: Colors.white,
-                                fillColor: MaterialStateProperty.resolveWith(
-                                    getColor),
-                                value: isLimited,
-                                onChanged: (bool? value) {
-                                  setState(() {
-                                    isLimited = value!;
-                                  });
-                                },
-                              ),
-                              const Text(
-                                'Check if one site or more stops may not be accessible at all times of the day or year.',
-                                style: TextStyle(fontSize: 6.5),)
+                              _pickedImage == null
+                                                ? dottedBorder(color: Colors.black)
+                                                : ClipRRect(
+                                                   borderRadius:
+                                                        BorderRadius.circular(12),
+                                                    child: kIsWeb
+                                                        ? Image.memory(webImage,
+                                                            fit: BoxFit.fill)
+                                                        : Image.file(_pickedImage!,
+                                                            fit: BoxFit.fill),
+                                                  ),
                             ],
                           ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(13.0),
-                      child: Wrap(
-                        direction: Axis.vertical,
-                        crossAxisAlignment: WrapCrossAlignment.start,
-                        children: [
-                          const Text('Park or Protected Area'),
-                          Row(
-                            children: [
-                              Checkbox(
-                                checkColor: Colors.white,
-                                fillColor: MaterialStateProperty.resolveWith(
-                                    getColor),
-                                value: isProtected,
-                                onChanged: (bool? value) {
-                                  setState(() {
-                                    isProtected = value!;
-                                  });
-                                },
-                              ),
-                              const Text(
-                                'Check if one or more stops are located within a park, or reserve, or any other protected area.',
-                                style: TextStyle(fontSize: 6.5),)
-                            ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(13.0),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.lightGreen,),
+                            //color: Colors.blue,
+                            onPressed: () {
+                              addFieldtrip();
+                            },
+                            child: Text("Click to Create"),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(13.0),
-                      child: Wrap(
-                        direction: Axis.vertical,
-                        crossAxisAlignment: WrapCrossAlignment.start,
-                        children: [
-                          const Text('Entrance or Admission Fees'),
-                          Row(
-                            children: [
-                              Checkbox(
-                                checkColor: Colors.white,
-                                fillColor: MaterialStateProperty.resolveWith(
-                                    getColor),
-                                value: isCharged,
-                                onChanged: (bool? value) {
-                                  setState(() {
-                                    isCharged = value!;
-                                  });
-                                },
-                              ),
-                              const Text(
-                                'Check if one or more stops have entrance/admission fees.',
-                                style: TextStyle(fontSize: 6.5),)
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          _pickedImage == null
-                                            ? dottedBorder(color: Colors.black)
-                                            : ClipRRect(
-                                               borderRadius:
-                                                    BorderRadius.circular(12),
-                                                child: kIsWeb
-                                                    ? Image.memory(webImage,
-                                                        fit: BoxFit.fill)
-                                                    : Image.file(_pickedImage!,
-                                                        fit: BoxFit.fill),
-                                              ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(13.0),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.lightGreen,),
-                        //color: Colors.blue,
-                        onPressed: () {
-                          addFieldtrip();
-        
-                          // showDialog<String>(
-                          //   context: context,
-                          //   builder: (BuildContext context) =>
-                          //       AlertDialog(
-                          //         title: const Text('Fieldtrip form'),
-                          //         content: const Text(
-                          //             'This fieldtrip is created successfully'),
-                          //         actions: <Widget>[
-                          //           TextButton(
-                          //             onPressed: () =>
-                          //                 Navigator.pop(context, 'OK'),
-                          //             child: const Text('OK'),
-                          //           ),
-                          //         ],
-                          //       ),
-                          // );
-                        },
-                        child: Text("Click to Create"),
-                      ),
-                    ),
-                  ],
+                  ),
+            
                 ),
               ),
-        
-            ),
-          ),
 
-        ],
+            ],
+          ),
+        ),
       ),
     );
   }
