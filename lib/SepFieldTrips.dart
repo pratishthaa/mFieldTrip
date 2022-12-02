@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -88,6 +89,23 @@ class SepFieldTrips extends StatelessWidget {
         return Image(image: AssetImage('images/mfieldtrip_icons_images/duration_four.png'), fit: BoxFit.fill,);
     }
   }
+
+_getImages(List images){
+  return CarouselSlider.builder(
+    options: CarouselOptions(height: 400),
+    itemCount: images.length,
+    itemBuilder: (context,index,realIndex){
+      final image=images[index];
+      return buildImages(image,index);
+    });
+}
+
+    Widget buildImages(String image,int index)=>Container(
+      margin: EdgeInsets.symmetric(horizontal: 12),
+      color: Colors.grey,
+      child: Image.network(image,fit: BoxFit.cover,),
+    );
+
   @override
   Widget build(BuildContext context) {
       final size=AppLayout.getSize(context);
@@ -102,7 +120,7 @@ class SepFieldTrips extends StatelessWidget {
           title:
           ListTile(
             title:
-            Text(documentSnapshot['title'], style: TextStyle(color:Colors.white, fontSize: 20)),
+            Text(documentSnapshot['title'], style: TextStyle(color:Colors.white, fontSize: 25)),
             subtitle:
             Text(documentSnapshot['trip offered by'], style: TextStyle(color:Colors.white)),
           )
@@ -147,11 +165,13 @@ class SepFieldTrips extends StatelessWidget {
                   ),
                 ): Gap(3),
                 Card(
+                 
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width * 0.90,
-                      child: Image(image: NetworkImage(documentSnapshot['images']), fit: BoxFit.fill,),
+                      child: _getImages(documentSnapshot['images']),
+                      // Image(image: NetworkImage(documentSnapshot['images'][0]), fit: BoxFit.fill,),
                     ),
                   ),
                 ),

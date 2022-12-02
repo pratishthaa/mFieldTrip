@@ -69,6 +69,7 @@ dependencies:
   uuid:
   dotted_border:
   multiselect:
+  carousel_slider:
 
 dev_dependencies:
   flutter_test:

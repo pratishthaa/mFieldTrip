@@ -66,7 +66,7 @@ class _SoloFieldTripState extends State<SoloFieldTrip> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                   color: Styles.primaryColor,
-                  image: DecorationImage(fit: BoxFit.cover, image: NetworkImage(documentSnapshot['images']))
+                  image: DecorationImage(fit: BoxFit.cover, image: NetworkImage(documentSnapshot['images'][0]))
                 ),
               )
             ,

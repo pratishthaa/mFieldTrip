@@ -5,6 +5,7 @@ import 'package:mfieldtrip/SoloFieldTrips.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:mfieldtrip/ss.dart';
 import 'CreateFieldTrip.dart';
 
 class HomePage extends StatefulWidget {
